@@ -101,7 +101,7 @@ const handleUpdateReview = async (req, res) => {
 const handleDeleteReview = async (req, res) => {
     const { reviewId } = req.params || {};
 
-    if (!reviewId) {
+    if (!reviewId || reviewId.trim() === '') {
         logger.error('Review ID is required', reviewId);
         return res.status(400).json({ message: 'Review ID is required' });
     }
