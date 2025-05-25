@@ -10,6 +10,6 @@ router.delete('/reviews/:reviewId', handleDeleteReview); // Delete a review
 router.get('/books', handleGetBooks); // Get all books
 router.post('/books', handleCreateBook); // Post a new book
 router.get('/books/:bookId', handleBook); // Get a specific book by ID
-router.get('/books/search', handleSearchBooks); // Search books by title or author
+router.get('/search', handleSearchBooks); // Search books by title or author
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const pool = require("../dbConfig/neonDB.js");
+const logger = require('../utils/logger'); // Importing the logger utility
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -16,14 +17,17 @@ const handleLogin = async (req, res) => {
         if (result.rowCount != 1) {
             return res.status(401).json({ status: "fail", message: "User Not Found" });
         }
-
+        // console.log("User Found", result.rows[0].username);
         const isMatch = await bcrypt.compare(password, result.rows[0].password);
 
         if (!isMatch) {
             return res.status(401).json({ status: "fail", message: " Password Incorrect " });
         }
 
-        const token = jwt.sign(result.rows[0].userid, process.env.JWT_SECRET);
+        const userId = result.rows[0].userid;
+        const userName = result.rows[0].username;
+        const payload = { userId, userName };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '59m' });
 
         if (!token) {
             return res.status(401).json({ status: "fail", message: "Login Fail" })
@@ -36,10 +40,9 @@ const handleLogin = async (req, res) => {
             message: "Login Successful ",
             token,
         });
-
-    } catch (err) {
-        console.log(err);
-        res.json({ message: "Login Fail Error", status: "fail" })
+    } catch (error) {
+        logger.error('Login Error:', error.message);
+        res.status(500).json({ message: error.message });
     }
 };
 

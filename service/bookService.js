@@ -18,7 +18,7 @@ const handleGetBooks = async (req, res) => {
             authorFilter = req.query.author ? { author: req.query.author } : {};
         }
         logger.info(`Author Filter: ${authorFilter.author}`);
-
+        // console.log(`req.user: ${req.user.userId}`);
         const totalBooks = await Book.countDocuments(authorFilter);
         const totalPages = Math.ceil(totalBooks / limit);
 
@@ -71,7 +71,8 @@ const handleCreateBook = async (req, res) => {
     }
     logger.info(`New book data: ${req.body}`);
 
-    const book = new Book({ title, author, description, links });
+    const userId = req.user.userId;
+    const book = new Book({ userId, title, author, description, links });
 
     //--todo--
     // Check if the book already exists 

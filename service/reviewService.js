@@ -35,10 +35,10 @@ const handleReview = async (bookId, skip, limit) => {
 const handleCreateReview = async (req, res) => {
 
     const { bookId } = req.params;
-    const { reviewer, comment, rating } = req.body;
-
-    if (!reviewer || !comment || !bookId) {
-        logger.error('Reviewer, comment, and bookId are required', reviewer, comment, bookId);
+    const { comment, rating } = req.body;
+    const userId = req.user.userId;
+    if (!userId || !comment || !bookId) {
+        logger.error(`Reviewer, comment, and bookId are required: ${userId}, ${comment}, ${bookId}`);
         return res.status(400).json({ message: 'Reviewer, comment, and rating are required' });
     }
 
@@ -46,7 +46,7 @@ const handleCreateReview = async (req, res) => {
 
     const review = new Review({
         bookId,
-        reviewer,
+        userId,
         comment,
         rating,
     });
